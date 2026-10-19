@@ -1,0 +1,36 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int bof(char *str)
+{
+    char buffer[12];
+
+    /* The destination buffer is too small for unrestricted input. */
+    strcpy(buffer, str);
+
+    printf("Input copied into buffer.\n");
+    return 1;
+}
+
+int main(void)
+{
+    char str[518];
+    FILE *badfile = fopen("badfile", "rb");
+
+    if (badfile == NULL) {
+        perror("badfile");
+        return 1;
+    }
+
+    size_t n = fread(str, 1, 517, badfile);
+    fclose(badfile);
+    str[n] = '\0';
+
+    printf("Bytes read: %zu\n", n);
+    bof(str);
+
+    printf("Returned properly.\n");
+    return 0;
+}
